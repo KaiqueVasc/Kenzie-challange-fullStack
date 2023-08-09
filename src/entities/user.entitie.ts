@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BeforeInsert, BeforeUpdate} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm"
 import {getRounds, hashSync} from 'bcryptjs'
+import { Contact } from "./contact.entitie"
 
 @Entity("users")
  class User {
@@ -30,6 +31,9 @@ import {getRounds, hashSync} from 'bcryptjs'
             this.password = hashSync(this.password,10)
         }
     }
+
+    @OneToMany(()=> Contact, contacts => contacts.user)
+    contacts: Contact[]
 }
 
 export { User }

@@ -1,4 +1,5 @@
 import {z} from 'zod'
+import { contactSchemaResponse } from './contact.schemas'
 
 const userSchema = z.object({
     id: z.string(),
@@ -18,8 +19,19 @@ const userSchemaResponse = userSchema.omit({
     password:true
 })
 
+const listSpecifcUserSchema = userSchema.omit({
+    password: true
+}).extend({
+    contacts: z.array(contactSchemaResponse)
+})
+
+
+const userSchemaUpdate = userSchemaRequest.partial()
+
 export {
     userSchema,
     userSchemaRequest,
-    userSchemaResponse
+    userSchemaResponse,
+    listSpecifcUserSchema,
+    userSchemaUpdate
 }
