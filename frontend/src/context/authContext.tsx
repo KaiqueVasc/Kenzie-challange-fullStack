@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TContactResponse } from "../schemas/contacts.shcemas";
 import { RegisterData } from "../pages/Register/validator";
+import { Contact } from "../pages/Dashboard";
 
 interface AuthProviderProps {
     children: ReactNode
@@ -70,9 +71,11 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     const deleteContact = (id: number)=> {
            return api.delete(`/contact/${id}`).then((response) => {
+            console.log(id)
             if ( response.status === 204){
                 toast("Contato excluido com sucesso", {type: "success"})
                 setContacts(contacts.filter((contact) => contact.id !== id))
+
                 return response.data
             }else{
                 return null

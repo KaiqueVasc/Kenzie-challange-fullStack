@@ -16,8 +16,6 @@ export interface Contact {
 export const Dashboard = () => {
     const [contacts, setContacts] = useState<Contact[]>([])
     const [isModalOpen, setIsModalOpen] = useState(false)
-    //const {loading} = useAuth()
-
     
 
     useEffect(()=> {

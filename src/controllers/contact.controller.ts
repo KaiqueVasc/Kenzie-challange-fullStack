@@ -1,5 +1,5 @@
 import {Request, Response} from 'express'
-import { TContactRequest, TContactResponse, TContactUpdate } from '../interfaces/contact.interfaces'
+import { TContactRequest, TContactResponse, TContactResponseList, TContactUpdate } from '../interfaces/contact.interfaces'
 import { createContactService, deleteContactService, listContactService, updateContactService } from '../services/contact/contact.service'
 
 const createContactController = async ( request:Request, response: Response): Promise<Response> => {
@@ -15,7 +15,7 @@ const listContactController = async(request:Request, response: Response): Promis
     const userIdSelected = response.locals.userId
     const contactId = request.params.id
 
-    const contact: TContactResponse =await listContactService(userIdSelected)
+    const contact: TContactResponseList =await listContactService(userIdSelected)
 
     return response.status(200).json(contact)
 }

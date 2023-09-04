@@ -2,8 +2,8 @@ import { AppDataSource } from "../../data-source"
 import { Contact } from "../../entities/contact.entitie"
 import { User } from "../../entities/user.entitie"
 import { AppError } from "../../errors"
-import { TContact, TContactRequest, TContactResponse, TContactUpdate } from "../../interfaces/contact.interfaces"
-import { contactSchemaResponse } from "../../schemas/contact.schemas"
+import { TContact, TContactRequest, TContactResponse, TContactResponseList, TContactUpdate } from "../../interfaces/contact.interfaces"
+import { contactSchemaResponse , contactSchemsResponseList} from "../../schemas/contact.schemas"
 
 const createContactService = async ( userId: string , contactData:TContactRequest): Promise<TContactResponse> => {
     const contactRepository = AppDataSource.getRepository(Contact)
@@ -32,28 +32,30 @@ const createContactService = async ( userId: string , contactData:TContactReques
 
 }
 
-const listContactService = async (userId: string): Promise<TContactResponse> => {
+const listContactService = async (userIdS: string): Promise<TContactResponseList> => {
     const contactRepository = AppDataSource.getRepository(Contact)
     const userRepository = AppDataSource.getRepository(User)
-
+   console.log(userIdS)
     const user = await userRepository.findOne({
         where: {
-            id: userId
+            id: userIdS
         }
     })
+     
 
-    if(user){
+    console.log(user)
+    if(!user){
         throw new AppError('User not found', 404)
     }
      
     const contacts = await contactRepository.find({
         where: {
-            user: !user
+            user: { id: userIdS}
         }
     })
     
-
-    return contactSchemaResponse.parse(contacts)
+    console.log(contacts)
+    return contactSchemsResponseList.parse(contacts)
 
 }
 

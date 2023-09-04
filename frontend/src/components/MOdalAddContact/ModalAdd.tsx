@@ -23,6 +23,7 @@ export const ModalAddContact = ({toggleModal,setContact}:ModalAddContactProps) =
         const response =  await api.post<Contact>("contact", data)
         
         setContact(previousContact => [response.data, ...previousContact])
+        toggleModal()
     }
 
     return (
