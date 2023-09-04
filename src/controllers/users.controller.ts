@@ -1,5 +1,5 @@
 import { Response, Request } from "express"
-import { TUserRequest, TUserResponse } from "../interfaces/users.interfaces"
+import { TUserList, TUserRequest, TUserResponse } from "../interfaces/users.interfaces"
 import { createUserService, deleteUserService, listUserService, updateUserService } from "../services/user/user.services"
 
 const createUserController = async( req: Request , res: Response) => {
@@ -12,9 +12,7 @@ const createUserController = async( req: Request , res: Response) => {
 }
 
 const listUserController = async (request: Request, response: Response): Promise<Response> => {
-    const userId = response.locals.id
-
-    const foundedUser: TUserResponse = await listUserService(userId)
+    const foundedUser = await listUserService()
 
     return response.status(200).json(foundedUser)
 }

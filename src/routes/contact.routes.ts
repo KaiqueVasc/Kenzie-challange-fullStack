@@ -4,9 +4,9 @@ import { ensureTokenIsValid } from "../middlewares/ensureTokenIsValid.middleware
 
 const contactRoutes: Router = Router()
 
-contactRoutes.post('', createContactController)
-contactRoutes.get('', listContactController)
-contactRoutes.patch('/:id', updateContactController)
+contactRoutes.post('', ensureTokenIsValid , createContactController)
+contactRoutes.get('',ensureTokenIsValid,listContactController)
+contactRoutes.patch('/:id', ensureTokenIsValid,updateContactController)
 contactRoutes.delete('/:id', deleteContactController)
 
 export { contactRoutes}

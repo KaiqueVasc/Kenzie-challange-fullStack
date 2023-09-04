@@ -1,11 +1,11 @@
 import { AppDataSource } from "../../data-source";
 import { Repository} from 'typeorm'
 import { User } from "../../entities/user.entitie";
-import { TUser, TUserRequest, TUserResponse } from "../../interfaces/users.interfaces";
+import { TUser, TUserList, TUserRequest, TUserResponse, TuserResponseList } from "../../interfaces/users.interfaces";
 import { AppError } from "../../errors";
-import { listSpecifcUserSchema, userSchemaResponse } from "../../schemas/users.schemas";
+import { listSpecifcUserSchema, userSchema, userSchemaResponse } from "../../schemas/users.schemas";
 
-const createUserService = async ( data: TUserRequest): Promise<TUserResponse> => {
+const createUserService = async ( data: TUserRequest): Promise<TUser> => {
     const {fullName,email,password,telephone} = data
     const userRepository = AppDataSource.getRepository(User)
     const findUser = await userRepository.findOne({
@@ -30,28 +30,17 @@ const createUserService = async ( data: TUserRequest): Promise<TUserResponse> =>
     return user
 }
 
-const listUserService = async (userId:any): Promise<TUserResponse> => {
+const listUserService = async (): Promise<TUser> => {
       const userRepository = AppDataSource.getRepository(User)
 
-      const user: User | null = await userRepository.findOne({
-        where: {
-            id: userId
-        },
-        relations: ['contacts']
-      })
+      const users = await userRepository.find()
+    
+      const clientReturn = listSpecifcUserSchema.parse(users)
 
-      if(!user){
-        throw new AppError('User not found', 404)
-      }
-
-      const findUser = listSpecifcUserSchema.parse(user)
-
-      return findUser
-
-
+      return clientReturn
 }
 
-const updateUserService = async (userData:any, userId:string): Promise<TUserResponse> => {
+const updateUserService = async (userData:any, userId:string): Promise<TUser> => {
     const userRepository = AppDataSource.getRepository(User)
 
     const oldUserData: User | null = await userRepository.findOne({

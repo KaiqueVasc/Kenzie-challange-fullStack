@@ -1,12 +1,18 @@
 import {z} from 'zod'
 import { userSchema, userSchemaRequest, userSchemaResponse } from '../schemas/users.schemas'
+import { User } from '../entities/user.entitie'
+import { DeepPartial, TypeORMError } from 'typeorm'
 
-type TUser = z.infer<typeof userSchema>
+type TUserList = Array<typeof userSchemaResponse>
+type TUser = z.infer<typeof userSchemaResponse>
 type TUserRequest = z.infer<typeof userSchemaRequest>
-type TUserResponse = z.infer<typeof userSchemaResponse>
+type TUserResponse = DeepPartial<TUserList>
+type TuserResponseList = z.infer<typeof userSchemaResponse>
 
 export {
     TUser,
     TUserRequest,
-    TUserResponse
+    TUserResponse,
+    TuserResponseList,
+    TUserList
 }

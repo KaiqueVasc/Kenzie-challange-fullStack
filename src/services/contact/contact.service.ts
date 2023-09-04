@@ -22,40 +22,42 @@ const createContactService = async ( userId: string , contactData:TContactReques
         user: user 
     }
    
-    const contact = contactRepository.create(dataWithUser)
+    const contact  = contactRepository.create(dataWithUser)
 
     await contactRepository.save(contact)
 
-    const createdContact = contactSchemaResponse.parse(contact)
+    const createdContact: TContactResponse = contactSchemaResponse.parse(contact)
 
     return createdContact
 
 }
 
-const listContactService = async (idContact: string, userId: string): Promise<TContact> => {
+const listContactService = async (userId: string): Promise<TContactResponse> => {
     const contactRepository = AppDataSource.getRepository(Contact)
+    const userRepository = AppDataSource.getRepository(User)
 
-    const contact = await contactRepository.findOne({
+    const user = await userRepository.findOne({
         where: {
-            id: parseInt(idContact)
-        },
-        relations: ['user']
+            id: userId
+        }
     })
 
-    if(!contact){
-        throw new AppError('Contact not found', 404)
+    if(user){
+        throw new AppError('User not found', 404)
     }
+     
+    const contacts = await contactRepository.find({
+        where: {
+            user: !user
+        }
+    })
+    
 
-    if(contact.user.id !== userId){
-         throw new AppError('Insufficient permission', 401)
-    }
+    return contactSchemaResponse.parse(contacts)
 
-    const contactReturn = contactSchemaResponse.parse(contact)
-
-    return contactReturn
 }
 
-const updateContactService = async (idContact: number, updateData: TContactUpdate, userId: number): Promise<TContact> => {
+const updateContactService = async (idContact: number, updateData: TContactUpdate): Promise<TContact> => {
     const contactRepository = AppDataSource.getRepository(Contact)
 
     const contact: Contact | null= await contactRepository.findOne({
@@ -80,7 +82,7 @@ const updateContactService = async (idContact: number, updateData: TContactUpdat
     return contactSchemaResponse.parse(updatedContact)
 }
 
-const deleteContactService = async (contactId: number, userId: number): Promise<void> => {
+const deleteContactService = async (contactId: number): Promise<void> => {
     const contactRepository = AppDataSource.getRepository(Contact)
 
     const contact: Contact | null = await contactRepository.findOne({
@@ -91,7 +93,7 @@ const deleteContactService = async (contactId: number, userId: number): Promise<
     })
 
     if(!contact){
-        throw new AppError('Contaxct not found', 404)
+        throw new AppError('Contact not found', 404)
     }
 
     await contactRepository.remove(contact)

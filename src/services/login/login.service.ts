@@ -32,6 +32,7 @@ const loginTokenService = async (loginData:any): Promise<string> => {
         }
     )
 
+
     return token
 }
 

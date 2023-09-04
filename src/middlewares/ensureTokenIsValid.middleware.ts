@@ -17,10 +17,7 @@ const ensureTokenIsValid = async( request: Request, response:Response, next: Nex
             throw new AppError(error.message,401)
         }
 
-        response.locals.user = {
-            emial: decoded.email,
-            id: Number(decoded.sub)
-        }
+        response.locals.userId = decoded.sub
 
         next()
     })
